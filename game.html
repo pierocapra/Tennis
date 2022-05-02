@@ -9,7 +9,7 @@
     var canvas;
     var canvasContext;
     var ballX = 400;
-    var ballSpeedX = generateRandomInteger(-10, 10);
+    var ballSpeedX = chooseRandom2Values(10,-10);
     var ballY = 300;
     var ballSpeedY = generateRandomInteger(-10, 10);
     var ballRadius = 10;
@@ -67,6 +67,11 @@
       });
     };
 
+    function chooseRandom2Values(value1, value2) {
+      var chosenValue = Math.random() < 0.5 ? value1 : value2;
+      return chosenValue;
+    }
+
     function generateRandomInteger(min, max) {
       return Math.floor(min + Math.random()*(max + 1 - min))
     }
@@ -74,6 +79,10 @@
     function ballReset(){
       if(player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE){
         showingWinScreen = true;
+        ballX = canvas.width /2;
+        ballY = canvas.height/2;
+        ballSpeedX = chooseRandom2Values(10,-10);
+        ballSpeedY = generateRandomInteger(-10, 10);
         return;
       }
       ballSpeedX = 0;
@@ -108,10 +117,6 @@
 
     function moveEverything() {
       if (showingWinScreen === true) {
-        ballX = canvas.width / 2;
-        ballY = canvas.height / 2;
-        ballSpeedX = 15;
-        ballSpeedY = 15;
         return;
       }
       computerMovement();
