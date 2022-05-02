@@ -8,15 +8,17 @@
   <script>
     var canvas;
     var canvasContext;
-    var ballX = 50;
-    var ballSpeedX = 10;
-    var ballY = 50;
-    var ballSpeedY = 10;
+    var ballX = 400;
+    var ballSpeedX = generateRandomInteger(-10, 10);
+    var ballY = 300;
+    var ballSpeedY = generateRandomInteger(-10, 10);
     var ballRadius = 10;
 
     var player1Score = 0;
     var player2Score = 0;
     const WINNING_SCORE = 3;
+
+    var roundWinner = 0;
 
     var showingWinScreen = false;
 
@@ -65,31 +67,37 @@
       });
     };
 
+    function generateRandomInteger(min, max) {
+      return Math.floor(min + Math.random()*(max + 1 - min))
+    }
+
     function ballReset(){
       if(player1Score >= WINNING_SCORE || player2Score >= WINNING_SCORE){
         showingWinScreen = true;
+        return;
       }
       ballSpeedX = 0;
       ballSpeedY = 0;
-      ballX = canvas.width/2;
-      ballY = canvas.height/2;
 
-      setTimeout(() => {
-        ballSpeedX = 10;
-        ballSpeedY = 10;
-      }, 1000);
+      if (roundWinner === 1) {
+        ballX = canvas.width - 50;
+        ballY = canvas.height/2;
+        setTimeout(() => {
+          ballSpeedX = generateRandomInteger(10, 25);
+          ballSpeedY = generateRandomInteger(-10, 10);
+        }, 1000);
+      }
+      if (roundWinner === 2) {
+        ballX = 50;
+        ballY = canvas.height/2;
+        setTimeout(() => {
+          ballSpeedX = generateRandomInteger(10, 25);
+          ballSpeedY = generateRandomInteger(-10, 10);
+        }, 1000);
+      }
     }
 
     function computerMovement() {
-      // if we want continuous movement 
-      // paddle2Y = paddle2Y + paddleSpeedY;
-      // if (paddle2Y < 0){
-      //   paddleSpeedY = -paddleSpeedY;
-      // } 
-      // if (paddle2Y + PADDLE_HEIGHT > canvas.height){
-      //   paddleSpeedY = -paddleSpeedY;
-      // }
-
       var paddle2YCenter = paddle2Y + (PADDLE_HEIGHT/2);
       if(paddle2YCenter < ballY -35){
         paddle2Y += 6;
@@ -100,6 +108,10 @@
 
     function moveEverything() {
       if (showingWinScreen === true) {
+        ballX = canvas.width / 2;
+        ballY = canvas.height / 2;
+        ballSpeedX = 15;
+        ballSpeedY = 15;
         return;
       }
       computerMovement();
@@ -117,6 +129,7 @@
         } else {
           if(ballX > canvas.width){
             player1Score++; // must be before ballreset
+            roundWinner = 1;
             ballReset();
           }
           
@@ -133,6 +146,7 @@
         } else {
           if( ballX < 0){
             player2Score++; // must be before ballreset
+            roundWinner = 2;
             ballReset();
           }
         }
